@@ -40,7 +40,7 @@ import os
 print('################################ download dir content')
 print(os.listdir(args.dataset_download))
 mlflow.log_dict({'files': os.listdir(args.dataset_download)}, 'downloadfiles.json')
-
+mlflow.log_dict(dict(os.environ),'environ.json')
 df_input = pd.read_parquet(args.dataset_download)
 print(df_input.head())
 
