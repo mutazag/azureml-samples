@@ -21,20 +21,29 @@ print('############################### sys args')
 print(sys.argv)
 import argparse
 parser = argparse.ArgumentParser()
-parser.add_argument('--kernel', type=str, dest='kernel')
-parser.add_argument('--penalty', dest='penalty')
-parser.add_argument('--train_dataset', dest='train_dataset')
-parser.add_argument('--dataset_download', dest='dataset_download')
 
-args = parser.parse_args()
+if (parser.prog == 'ipykernel_launcher.py'):
+    parser.add_argument('--train_dataset', dest='train_dataset', default='../download_dataset/data-csv/diabetes.csv')
+    parser.add_argument('--dataset_download', dest='dataset_download', default='../download_dataset/data-parquet')
+    parser.add_argument('--input_dataset', dest='input_dataset', default='../download_dataset/data-parquet')
+    
+else:
+    parser.add_argument('--train_dataset', dest='train_dataset', default='./diabetes/download_dataset/data-csv/diabetes.csv')
+    parser.add_argument('--dataset_download', dest='dataset_download', default='./diabetes/download_dataset/data-parquet')
+    parser.add_argument('--input_dataset', dest='input_dataset', default='./diabetes/download_dataset/data-parquet')
+
+
+#%%
+args, _ = parser.parse_known_args()
 train_dataset = args.train_dataset
 print('###############################')
 print('train dataset : ', train_dataset)
-mlflow.set_tag('train_dataset', train_dataset)
-mlflow.set_tag('kernel', args.kernel)
-mlflow.set_tag('penalty', args.penalty)
-mlflow.set_tag('dataset_download', args.dataset_download)
+print('dataset_download : ', args.dataset_download)
 
+#%% 
+mlflow.set_tag('train_dataset', train_dataset)
+mlflow.set_tag('dataset_download', args.dataset_download)
+mlflow.set_tag('input_dataset', args.input_dataset)
 #%% 
 import os
 print('################################ download dir content')
@@ -42,8 +51,25 @@ print(os.listdir(args.dataset_download))
 mlflow.log_dict({'files': os.listdir(args.dataset_download)}, 'downloadfiles.json')
 mlflow.log_dict(dict(os.environ),'environ.json')
 df_input = pd.read_parquet(args.dataset_download)
+# df_input = pd.read_parquet(args.input_dataset)
 print(df_input.head())
 
+
+# %% 
+try: 
+    #The download location can also be retrieved from input_datasets of the run context.
+    from azureml.core import Run
+    download_location = Run.get_context().input_datasets['input_dataset']
+    print('################################ download location')
+    print(download_location)
+    print(os.listdir(download_location))
+    df2_input = pd.read_parquet(download_location)
+    print(df2_input.tail())
+except: 
+    print('no input_dataset')
+#%%
+
+print('################################ read train dataset')
 X = np.array(df_input.drop(columns=['target']))
 y = np.array(df_input.target)
 print('read features: ', len(X))
@@ -93,4 +119,6 @@ idx = np.argsort(data["test"]["y"])
 plt.plot(data["test"]["y"][idx], preds[idx])
 fig.savefig("actuals_vs_predictions.png")
 mlflow.log_artifact("actuals_vs_predictions.png")
+# %%
+
 # %%
