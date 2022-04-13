@@ -1,11 +1,22 @@
-import tensorflow as tf
+
 import mlflow
-#mlflow.set_experiment('cats and dogs')
+# mlflow.set_experiment('cats and dogs')
 mlflow.autolog()
 
+
+
+import argparse
 import os
-# TODO: parmaaterise path
-zip_dir =os.path.expanduser('~/cloudfiles/data/cats_and_dogs_filtered')
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--input_dataset', dest='input_dataset', default=os.path.expanduser('~/cloudfiles/data/cats_and_dogs_filtered'))
+args, _ = parser.parse_known_args()
+# # TODO: parmaaterise path
+zip_dir = args.input_dataset
+print('################################## input dataset: {}'.format(zip_dir))
+mlflow.set_tag('input_dataset', zip_dir)
+
+
 import pathlib
 parent_dir = pathlib.Path(zip_dir)
 
@@ -19,6 +30,8 @@ print(train_dir)
 print(test_dir)
 
 # SOLUTION
+print('############################### import tensorflow')
+import tensorflow as tf
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 train_img_gen = ImageDataGenerator(
     rescale=1./255,
@@ -102,7 +115,8 @@ reduce_lr = ReduceLROnPlateau(
 
 
 # TODO: paramaters output folder
-checkpoint_filepath = os.path.expanduser('~/cloudfiles/data/model_checkpoint/vgg_checkpoint')
+print('############################# model checkpoint')
+checkpoint_filepath = os.path.expanduser('/tmp/checkpoint')
 print(checkpoint_filepath)
 
 model_checkpoint_cb = ModelCheckpoint(
@@ -132,5 +146,5 @@ plt.plot(history.history['val_accuracy'], label='validation')
 plt.ylabel('accuracy')
 plt.xlabel('Epoch')
 plt.savefig("actuals_vs_predictions.png")
-mlflow.log_artifact(checkpoint_filepath/"actuals_vs_predictions.png")
+mlflow.log_artifact("actuals_vs_predictions.png")
 
