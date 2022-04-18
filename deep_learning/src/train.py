@@ -3,6 +3,12 @@ import mlflow
 # mlflow.set_experiment('cats and dogs')
 mlflow.autolog()
 
+import mlflow.keras
+# autolog your metrics, parameters, and model
+
+
+mlflow.set_tag('logging', 'mlflow.autolog()')
+
 
 
 import argparse
