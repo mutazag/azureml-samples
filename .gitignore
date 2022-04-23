@@ -131,3 +131,6 @@ mlruns/
 aml_config
 diabetes/download_dataset/data-*/*
 deep_learning/model/*
+
+.amlignore
+*.amltmp
