@@ -3,7 +3,7 @@ import mlflow
 # mlflow.set_experiment('cats and dogs')
 mlflow.autolog()
 
-import mlflow.keras
+# import mlflow.keras
 # autolog your metrics, parameters, and model
 
 
@@ -15,7 +15,7 @@ import argparse
 import os
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--input_dataset', dest='input_dataset', default=os.path.expanduser('~/cloudfiles/data/cats_and_dogs_filtered'))
+parser.add_argument('--input_dataset', dest='input_dataset', default=os.path.expanduser('/mnt/tmp/cats_dogs'))
 args, _ = parser.parse_known_args()
 # # TODO: parmaaterise path
 zip_dir = args.input_dataset
