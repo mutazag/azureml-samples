@@ -134,3 +134,6 @@ deep_learning/model/*
 
 .amlignore
 *.amltmp
+
+*/.logs/*
+*/.ipynb_aml_checkpoints/*
