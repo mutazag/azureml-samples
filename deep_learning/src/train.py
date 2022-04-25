@@ -1,23 +1,19 @@
 
 import mlflow
-# mlflow.set_experiment('cats and dogs')
-mlflow.autolog()
-
-# import mlflow.keras
 # autolog your metrics, parameters, and model
-
-
+mlflow.autolog()
 mlflow.set_tag('logging', 'mlflow.autolog()')
 
 
 
+## command line arguments, input_dataset to hold the path for mounted files
 import argparse
 import os
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--input_dataset', dest='input_dataset', default=os.path.expanduser('/mnt/tmp/cats_dogs'))
 args, _ = parser.parse_known_args()
-# # TODO: parmaaterise path
+
 zip_dir = args.input_dataset
 print('################################## input dataset: {}'.format(zip_dir))
 mlflow.set_tag('input_dataset', zip_dir)
@@ -35,7 +31,6 @@ test_dir = parent_dir / 'validation'
 print(train_dir)
 print(test_dir)
 
-# SOLUTION
 print('############################### import tensorflow')
 import tensorflow as tf
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
@@ -120,7 +115,6 @@ reduce_lr = ReduceLROnPlateau(
 
 
 
-# TODO: paramaters output folder
 print('############################# model checkpoint')
 checkpoint_filepath = os.path.expanduser('/tmp/checkpoint')
 print(checkpoint_filepath)
